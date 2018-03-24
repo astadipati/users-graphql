@@ -11,14 +11,16 @@ const {
     GraphQLSchema //library inti dari schema yang ditaruh di root
 } = graphql;
 
-// manual data
-// const users = [
-//     {id: '23', firstName: 'Rama', age: 22},
-//     {id: '24', firstName: 'Astadipati', age: 23},
-//     {id: '25', firstName: 'Astadinata', age: 24},
-//     {id: '26', firstName: 'Kenshin', age: 25},
-//     {id: '27', firstName: 'Kinarra', age: 22}
-// ];
+// 1 relasi ke tabel lain
+const CompanyType = new GraphQLObjectType({
+    name: "Company",
+    fields: {
+        id: {type:GraphQLString},
+        name: {type:GraphQLString},
+        description: {type:GraphQLString}
+    }
+});
+
 
 const UserType = new GraphQLObjectType({
     // bagian ini ada 2 property
@@ -28,7 +30,15 @@ const UserType = new GraphQLObjectType({
     fields: {
         id:  {type: GraphQLString} ,
         firstName: {type: GraphQLString},
-        age: {type: GraphQLInt}
+        age: {type: GraphQLInt},
+        // ini relasinya
+        company:{
+            type: CompanyType,
+            resolve(parentValue, args){
+                console.log(parentValue,args);
+                axios.get(`http://localhost:3000/companies/${parentValue.companyId}`)
+            }
+        }
     }
 });
 
